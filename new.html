@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THE DAY</title>
+
+  <!-- Birthday Music -->
+  <audio id="birthday-audio" autoplay loop>
+    <source src="Busy Signal & RC - Dreams Of Brighter Days (lyric video) 🎵_-yt.savetube.me.mp3" type="audio/mpeg">
+    Your browser does not support the audio tag.
+  </audio>
+
+  <!-- Confetti JS -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('snap.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Arial', sans-serif;
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 30px;
+      border-radius: 15px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    p {
+      font-size: 1.5rem;
+    }
+
+    .countdown {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    /* Loading Spinner */
+    .loader {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #ffcc00;
+      border-radius: 50%;
+      width: 70px;
+      height: 70px;
+      animation: spin 1.5s linear infinite;
+      margin-top: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Small gallery link */
+    .small-gallery-link {
+      margin-top: 15px;
+      font-size: 1.2rem;
+      display: none; /* hidden until birthday */
+    }
+
+    .small-gallery-link a {
+      color: #ffcc00;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Another year 🎉</h1>
+    <div class="countdown" id="countdown"></div>
+
+    <div class="loader" id="loader"></div>
+
+    <p class="small-gallery-link" id="gallery-link">
+      <a href="gallary.html" id="gallery-anchor">Throback files📸</a>
+    </p>
+  </div>
+
+  <script>
+    // 🎊 Confetti animation
+    function triggerConfetti(duration = 5000) {
+      let end = Date.now() + duration;
+
+      (function frame() {
+        confetti({
+          particleCount: 6,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 6,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 }
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+      let currentYear = now.getFullYear();
+
+      // 🎂 Birthday = August 19
+      let birthday = new Date(`August 19, ${currentYear} 00:00:00`);
+
+      if (now.getDate() === 19 && now.getMonth() === 7) {
+        document.getElementById("countdown").innerHTML = 
+          `🎉 Happy Birthday! 🥳<br>Welcome to Level ${currentYear - 2004 + 1}! 🚀🔥`;
+
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("gallery-link").style.display = "block";
+
+        clearInterval(timer); // stop counter
+        return;
+      }
+
+      // If not yet birthday → keep counting
+      let targetDate = birthday.getTime();
+      if (now.getTime() > birthday.getTime()) {
+        targetDate = new Date(`August 19, ${currentYear + 1} 00:00:00`).getTime();
+      }
+
+      const diff = targetDate - now.getTime();
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById("countdown").innerHTML = 
+        `${days}d ${hours}h ${minutes}m ${seconds}s <br>Countdown running ⏳`;
+    }
+
+    let timer = setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // 🎉 Fire confetti on gallery link click
+    document.getElementById("gallery-anchor").addEventListener("click", (e) => {
+      e.preventDefault(); // stop immediate navigation
+      triggerConfetti(5000); // confetti for 5s
+      setTimeout(() => {
+        window.location.href = e.target.href; // go to gallery after confetti
+      }, 5200); // small delay
+    });
+
+    // 🎵 Handle autoplay block and trigger confetti on load
+    document.addEventListener('DOMContentLoaded', () => {
+      const audio = document.getElementById('birthday-audio');
+      audio.volume = 1.0;
+      const startTime = 15;
+
+      audio.addEventListener('canplaythrough', function () {
+        if (audio.currentTime < startTime) {
+          audio.currentTime = startTime;
+        }
+      });
+
+      // Trigger confetti when the page loads
+      triggerConfetti(5000); // Confetti for 5 seconds on page load
+
+      audio.play().catch(() => {
+        let button = document.createElement('button');
+        button.innerText = "Play Music 🎶";
+        button.style.position = "absolute";
+        button.style.top = "50%";
+        button.style.left = "50%";
+        button.style.transform = "translate(-50%, -50%)";
+        button.style.padding = "10px 20px";
+        button.style.fontSize = "16px";
+        button.style.backgroundColor = "#ffcc00";
+        button.style.color = "#000";
+        button.style.border = "none";
+        button.style.borderRadius = "5px";
+        button.style.cursor = "pointer";
+        
+        document.body.appendChild(button);
+        
+        button.addEventListener('click', () => {
+          audio.play();
+          button.remove();
+        });
+      });
+    });
+  </script>
+</body>
+</html>

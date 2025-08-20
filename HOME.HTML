@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="style.css">
+    <title>THE DAY</title>\
+   
+    
+    <audio id="birthday-audio" autoplay loop>
+        <source src="MaWhoo, GL Ceejay & Thukuthela - Bengicela feat. Jazzworx (Official Lyric Video) - MaWhoo(1).mp3" type="audio/mpeg">
+        Your browser does not support the audio tag.
+    </audio>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Another year🎉</h1>
+        <p class="text">Another adventure</p>
+        <div class="countdown" id="countdown"></div>
+         <div class="loader"></div>
+        <p class="throwback-link">
+            <a href="Gallery.html" id="throwback-anchor" target="_blank">Throwback files 📸</a>
+        </p>
+    </div>
+
+    <script>
+        
+        function triggerConfetti(duration = 5000) {
+            let end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 6,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 6,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            })();
+        }
+
+        function updateCountdown() {
+            const now = new Date();
+            let currentYear = now.getFullYear();
+            let birthday = new Date(`April 1, ${currentYear} 00:00:00`).getTime();
+
+            if (now.getDate() === 1 && now.getMonth() === 3) {
+                document.getElementById("countdown").innerHTML = 
+                    `NI God manze for the far! 🎊`;
+                document.querySelector(".loader").style.display = "none"; // Hide spinner after countdown ends
+                return;
+            }
+
+            let targetDate = (now.getTime() < birthday) ? birthday : new Date(`April 1, ${currentYear + 1} 00:00:00`).getTime();
+            const diff = targetDate - now.getTime();
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML = 
+                `${days}d ${hours}h ${minutes}m ${seconds}s <br>Next stop: Loading 🎉`;
+            document.querySelector(".loader").style.display = "block";
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        document.addEventListener('click', (e) => {
+            if (e.target && e.target.id === "throwback-anchor") {
+                e.preventDefault(); 
+                triggerConfetti(5000); 
+                setTimeout(() => {
+                    window.location.href = e.target.href;
+                }, 5200); 
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const audio = document.getElementById('birthday-audio');
+            audio.volume = 1.0;
+            const startTime = 15;
+
+            audio.addEventListener('canplaythrough', function () {
+                if (audio.currentTime < startTime) {
+                    audio.currentTime = startTime;
+                }
+            });
+
+
+            triggerConfetti(5000); 
+
+            audio.play().catch(() => {
+                let button = document.createElement('button');
+                button.innerText = "Play Music 🎶";
+                button.style.position = "absolute";
+                button.style.top = "50%";
+                button.style.left = "50%";
+                button.style.transform = "translate(-50%, -50%)";
+                button.style.padding = "10px 20px";
+                button.style.fontSize = "16px";
+                button.style.backgroundColor = "#ffcc00";
+                button.style.color = "#000";
+                button.style.border = "none";
+                button.style.borderRadius = "5px";
+                button.style.cursor = "pointer";
+                
+                document.body.appendChild(button);
+                
+                button.addEventListener('click', () => {
+                    audio.play();
+                    button.remove();
+                });
+            });
+        });
+    </script>
+
+   
+</body>
+</html>
