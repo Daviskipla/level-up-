@@ -3,29 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="stylesheet" href="style.css">
-    <title>THE DAY</title>\
-   
-    
+    <title>THE DAY</title>
+    <!-- Birthday Music -->
     <audio id="birthday-audio" autoplay loop>
         <source src="MaWhoo, GL Ceejay & Thukuthela - Bengicela feat. Jazzworx (Official Lyric Video) - MaWhoo(1).mp3" type="audio/mpeg">
         Your browser does not support the audio tag.
     </audio>
+    <!-- Confetti JS -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script>
+        (function() {
+            emailjs.init("o03rM0EGbSDSYrUst");
+        })();
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Another year🎉</h1>
         <p class="text">Another adventure</p>
         <div class="countdown" id="countdown"></div>
-         <div class="loader"></div>
+        <!-- Throwback Files Link -->
         <p class="throwback-link">
-            <a href="Gallery.html" id="throwback-anchor" target="_blank">Throwback files 📸</a>
+            <a href="gallery.html" id="throwback-anchor">Throwback files 📸</a>
         </p>
-    </div>
+        <!-- Custom Form Trigger -->
+        <div class="form-container">
+            <button id="show-form-btn">Do you want to send a Note? 📝</button>
+            <form id="noteForm" style="display: none;">
+                <input type="text" id="from_name" name="from_name" placeholder="Name (optional)" maxlength="50">
+                <input type="email" id="from_email" name="from_email" placeholder="Your Email" required maxlength="50">
+                <textarea id="message" name="message" placeholder="Textarea" required maxlength="200" rows="4"></textarea>
+                <button type="submit">Send Note</button>
+            </form>
+        </div>
+    </div> te
 
     <script>
-        
+        // 🎊 Confetti animation
         function triggerConfetti(duration = 5000) {
             let end = Date.now() + duration;
 
@@ -57,7 +73,6 @@
             if (now.getDate() === 1 && now.getMonth() === 3) {
                 document.getElementById("countdown").innerHTML = 
                     `NI God manze for the far! 🎊`;
-                document.querySelector(".loader").style.display = "none"; // Hide spinner after countdown ends
                 return;
             }
 
@@ -69,23 +84,24 @@
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
             document.getElementById("countdown").innerHTML = 
-                `${days}d ${hours}h ${minutes}m ${seconds}s <br>Next stop: Loading 🎉`;
-            document.querySelector(".loader").style.display = "block";
+                `${days}d ${hours}h ${minutes}m ${seconds}s <br> <br>Next stop: Loading`;
         }
 
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
+        // 🎉 Fire confetti on throwback link click
         document.addEventListener('click', (e) => {
             if (e.target && e.target.id === "throwback-anchor") {
-                e.preventDefault(); 
-                triggerConfetti(5000); 
+                e.preventDefault(); // Stop immediate navigation
+                triggerConfetti(5000); // Confetti for 5s
                 setTimeout(() => {
-                    window.location.href = e.target.href;
-                }, 5200); 
+                    window.location.href = e.target.href; // Navigate to gallery
+                }, 5200); // Small delay
             }
         });
 
+        
         document.addEventListener('DOMContentLoaded', () => {
             const audio = document.getElementById('birthday-audio');
             audio.volume = 1.0;
@@ -97,7 +113,7 @@
                 }
             });
 
-
+          
             triggerConfetti(5000); 
 
             audio.play().catch(() => {
@@ -122,9 +138,168 @@
                     button.remove();
                 });
             });
+
+            // Show form when button is clicked
+            document.getElementById('show-form-btn').addEventListener('click', () => {
+                document.getElementById('noteForm').style.display = 'block';
+                document.getElementById('show-form-btn').style.display = 'none';
+            });
+
+            // Handle form submission with EmailJS
+            document.getElementById('noteForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                emailjs.send('service_k40vh5h', 'template_0mm9fdn', {
+                    from_name: document.getElementById('from_name').value,
+                    from_email: document.getElementById('from_email').value,
+                    message: document.getElementById('message').value
+                }).then(
+                    function() {
+                        alert('✅ Note sent successfully!');
+                        document.getElementById('noteForm').reset(); // Clear form
+                        document.getElementById('noteForm').style.display = 'none';
+                        document.getElementById('show-form-btn').style.display = 'block';
+                    },
+                    function(error) {
+                        alert('❌ Failed to send: ' + JSON.stringify(error));
+                    }
+                );
+            });
         });
     </script>
 
-   
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('snap.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        p {
+            font-size: 1.5rem;
+        }
+
+        .countdown {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        a {
+            color: rgb(27, 224, 234);
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            text-decoration: none;
+        }
+
+        /* Throwback link styling */
+        .throwback-link {
+            margin-top: 15px;
+            font-size: 1.2rem;
+        }
+
+        .throwback-link a {
+            color: #ffcc00;
+            text-decoration: underline;
+            cursor: pointer;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Form container styling */
+        .form-container {
+            margin-top: 20px;
+        }
+
+        .form-container button#show-form-btn {
+            padding: 8px 20px;
+            background-color: #ffcc00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .form-container button#show-form-btn:hover {
+            background-color: #ffd700;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 300px;
+        }
+
+        .form-container input,
+        .form-container textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            background: transparent;
+            border: 2px solid #ffcc00;
+            border-radius: 5px;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            font-size: 1rem;
+            padding: 10px;
+            outline: none;
+        }
+
+        .form-container textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        .form-container input::placeholder,
+        .form-container textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-container button {
+            padding: 8px 20px;
+            background-color: #ffcc00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .form-container button:hover {
+            background-color: #ffd700;
+        }
+
+        
+        @media (max-width: 600px) {
+            .form-container form {
+                width: 100%;
+            }
+            .form-container textarea {
+                height: 120px;
+            }
+        }
+    </style>
 </body>
 </html>
